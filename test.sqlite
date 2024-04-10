@@ -1,0 +1,46 @@
+-- Top 25 schools (.edu domains)
+SELECT email_domain, COUNT(*) as learner_count
+FROM users
+WHERE email_domain LIKE '%.edu'
+GROUP BY email_domain
+ORDER BY learner_count DESC
+LIMIT 25;
+
+-- How many .edu learners are located in New York?
+SELECT COUNT(*) as ny_edu_learners
+FROM users
+WHERE email_domain LIKE '%.edu' AND country = 'New York';
+
+-- How many learners are using the mobile app?
+SELECT COUNT(*) as mobile_app_learners
+FROM users
+WHERE mobile_app = 'mobile-user';
+
+-- Query for the sign up counts for each hour
+SELECT strftime('%H', sign_up_at) as signup_hour, COUNT(*) as signups_count
+FROM users
+GROUP BY signup_hour
+ORDER BY signup_hour;
+
+-- Join users and progress tables
+SELECT users.user_id, users.email_domain, users.country, progress.*
+FROM users
+JOIN progress ON users.user_id = progress.user_id;
+
+-- Different schools (.edu domains) prefer different courses
+SELECT email_domain, learn_cpp, learn_sql, learn_html, learn_javascript, learn_java
+FROM users
+JOIN progress ON users.user_id = progress.user_id
+WHERE email_domain LIKE '%.edu';
+
+-- Courses New Yorkers are taking
+SELECT users.user_id, users.email_domain, progress.*
+FROM users
+JOIN progress ON users.user_id = progress.user_id
+WHERE users.country = 'New York';
+
+-- Courses Chicago students are taking
+SELECT users.user_id, users.email_domain, progress.*
+FROM users
+JOIN progress ON users.user_id = progress.user_id
+WHERE users.country = 'Chicago';
